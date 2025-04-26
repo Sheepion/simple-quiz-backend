@@ -19,8 +19,8 @@
 
     <!-- 插入一条题库记录 -->
     <insert id="insert" parameterType="com.sheepion.simplequiz.model.QuizBank" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO quiz_bank (name, description, created_at, updated_at, deleted)
-        VALUES (#{name}, #{description}, now(), now(), false)
+        INSERT INTO quiz_bank (name, description, deleted)
+        VALUES (#{name}, #{description}, false)
     </insert>
 
     <!-- 根据ID更新题库信息 -->
@@ -29,7 +29,6 @@
         <set>
             <if test="name != null">name = #{name},</if>
             <if test="description != null">description = #{description},</if>
-            updated_at = now()
         </set>
         WHERE id = #{id} AND deleted = false
     </update>
@@ -66,8 +65,7 @@
     <!-- 根据ID逻辑删除题库 -->
     <update id="deleteById">
         UPDATE quiz_bank
-        SET deleted = true,
-            updated_at = now()
+        SET deleted = true
         WHERE id = #{id} AND deleted = false
     </update>
 

@@ -1,6 +1,7 @@
 package com.sheepion.simplequiz.model;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
+import java.util.Map;
 
 import com.sheepion.simplequiz.enums.QuestionType;
 
@@ -29,8 +30,8 @@ public class QuizQuestion {
     @Schema(description = "题目类型", requiredMode = Schema.RequiredMode.REQUIRED)
     private QuestionType type;
     
-    @Schema(description = "选项内容，JSON格式")
-    private Object options;
+    @Schema(description = "选项内容，JSON格式，如单选题的选项 {\"A\":\"选项内容\", \"B\":\"选项内容\"}")
+    private Map<String, String> options;
     
     @Schema(description = "正确答案", requiredMode = Schema.RequiredMode.REQUIRED)
     private String answer;
@@ -39,10 +40,10 @@ public class QuizQuestion {
     private String analysis;
     
     @Schema(description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED)
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
     
     @Schema(description = "更新时间", requiredMode = Schema.RequiredMode.REQUIRED)
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
     
     @Schema(description = "是否已删除", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean deleted;

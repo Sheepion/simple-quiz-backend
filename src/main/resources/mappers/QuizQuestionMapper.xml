@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sheepion.simplequiz.mapper.QuizQuestionMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.sheepion.simplequiz.model.QuizQuestion">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="quiz_bank_id" jdbcType="BIGINT" property="quizBankId"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="type" jdbcType="VARCHAR" property="type" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result column="options" jdbcType="OTHER" property="options" typeHandler="com.sheepion.simplequiz.common.typehandler.JsonbTypeHandler"/>
+        <result column="answer" jdbcType="VARCHAR" property="answer"/>
+        <result column="analysis" jdbcType="VARCHAR" property="analysis"/>
+        <result column="created_at" jdbcType="TIMESTAMP" property="createdAt"/>
+        <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt"/>
+        <result column="deleted" jdbcType="BOOLEAN" property="deleted"/>
+    </resultMap>
+
+    <!-- 通用列 -->
+    <sql id="Base_Column_List">
+        id, quiz_bank_id, title, content, type, options, answer, analysis, created_at, updated_at, deleted
+    </sql>
+
+    <!-- 插入一条题目记录 -->
+    <insert id="insert" parameterType="com.sheepion.simplequiz.model.QuizQuestion" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO quiz_question (quiz_bank_id, title, content, type, options, answer, analysis, deleted)
+        VALUES (#{quizBankId}, #{title}, #{content}, #{type, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, 
+                #{options, typeHandler=com.sheepion.simplequiz.common.typehandler.JsonbTypeHandler}, #{answer}, #{analysis}, false)
+    </insert>
+
+    <!-- 根据ID更新题目信息 -->
+    <update id="updateById" parameterType="com.sheepion.simplequiz.model.QuizQuestion">
+        UPDATE quiz_question
+        SET quiz_bank_id = #{quizBankId},
+            title = #{title},
+            content = #{content},
+            type = #{type, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+            options = #{options, typeHandler=com.sheepion.simplequiz.common.typehandler.JsonbTypeHandler},
+            answer = #{answer},
+            analysis = #{analysis}
+        WHERE id = #{id} AND deleted = false
+    </update>
+
+    <!-- 根据ID查询题目信息 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM quiz_question
+        WHERE id = #{id} AND deleted = false
+    </select>
+
+    <!-- 条件查询题目列表，所有条件均为可选 -->
+    <select id="selectByCondition" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM quiz_question
+        WHERE deleted = false
+        <if test="quizBankId != null">
+            AND quiz_bank_id = #{quizBankId}
+        </if>
+        <if test="title != null and title != ''">
+            AND title LIKE CONCAT('%', #{title}, '%')
+        </if>
+        <if test="type != null">
+            AND type = #{type, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
+        </if>
+        ORDER BY id DESC
+    </select>
+
+    <!-- 根据ID逻辑删除题目 -->
+    <update id="deleteById">
+        UPDATE quiz_question
+        SET deleted = true
+        WHERE id = #{id} AND deleted = false
+    </update>
+
+</mapper> 
