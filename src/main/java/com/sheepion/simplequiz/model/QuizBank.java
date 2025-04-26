@@ -1,14 +1,22 @@
 package com.sheepion.simplequiz.model;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * 题库实体类
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @Schema(description = "题库")
 public class QuizBank {
     
@@ -22,10 +30,10 @@ public class QuizBank {
     private String description;
     
     @Schema(description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED)
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
     
     @Schema(description = "更新时间", requiredMode = Schema.RequiredMode.REQUIRED)
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
     
     @Schema(description = "是否已删除", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean deleted;

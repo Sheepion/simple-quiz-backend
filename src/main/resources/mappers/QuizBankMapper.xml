@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sheepion.simplequiz.mapper.QuizBankMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.sheepion.simplequiz.model.QuizBank">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="created_at" jdbcType="TIMESTAMP" property="createdAt"/>
+        <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt"/>
+        <result column="deleted" jdbcType="BOOLEAN" property="deleted"/>
+    </resultMap>
+
+    <!-- 通用列 -->
+    <sql id="Base_Column_List">
+        id, name, description, created_at, updated_at, deleted
+    </sql>
+
+    <!-- 插入一条题库记录 -->
+    <insert id="insert" parameterType="com.sheepion.simplequiz.model.QuizBank" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO quiz_bank (name, description, created_at, updated_at, deleted)
+        VALUES (#{name}, #{description}, now(), now(), false)
+    </insert>
+
+    <!-- 根据ID更新题库信息 -->
+    <update id="updateById" parameterType="com.sheepion.simplequiz.model.QuizBank">
+        UPDATE quiz_bank
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="description != null">description = #{description},</if>
+            updated_at = now()
+        </set>
+        WHERE id = #{id} AND deleted = false
+    </update>
+
+    <!-- 根据ID查询题库信息 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM quiz_bank
+        WHERE id = #{id} AND deleted = false
+    </select>
+
+    <!-- 查询所有未删除的题库列表 -->
+    <select id="selectList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM quiz_bank
+        WHERE deleted = false
+        ORDER BY id DESC
+    </select>
+
+    <!-- 根据名称模糊查询题库列表 -->
+    <select id="selectByName" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM quiz_bank
+        WHERE deleted = false
+        <if test="name != null and name != ''">
+            AND name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        ORDER BY id DESC
+    </select>
+
+    <!-- 根据ID逻辑删除题库 -->
+    <update id="deleteById">
+        UPDATE quiz_bank
+        SET deleted = true,
+            updated_at = now()
+        WHERE id = #{id} AND deleted = false
+    </update>
+
+</mapper> 
